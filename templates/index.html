@@ -73,15 +73,23 @@
         /* Stile Header */
         .header {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             justify-content: space-between;
             padding-bottom: 20px;
             border-bottom: 1px solid var(--nord3);
             margin-bottom: 20px;
         }
+        
+        @media (min-width: 600px) {
+            .header {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
 
         .header h1 {
-            margin: 0;
+            margin: 0 0 10px 0;
             font-size: clamp(20px, 4vw, 28px);
             font-weight: 600;
             color: var(--nord6);
@@ -117,7 +125,6 @@
         .breadcrumb {
             font-size: clamp(12px, 3vw, 14px);
             color: var(--nord3);
-            margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -271,13 +278,8 @@
         .icon-html { fill: var(--nord5); }
         .icon-css { fill: var(--nord7); }
         .icon-js { fill: var(--nord13); }
-        .icon-external {
-            margin-left: 8px;
-            fill: var(--nord9);
-            width: 14px;
-            height: 14px;
-        }
-
+        .icon-copy { fill: var(--nord9); }
+        
         .tooltip {
             position: absolute;
             top: 50%;
@@ -387,7 +389,7 @@
             margin-top: 24px;
         }
 
-        .file-viewer .code-header {
+        .file-viewer .content-header {
             background-color: var(--nord1);
             padding: 12px 20px;
             border: 1px solid var(--nord3);
@@ -398,21 +400,22 @@
             color: var(--nord6);
         }
 
-        .file-viewer .code-body {
+        .file-viewer .content-body {
             border: 1px solid var(--nord3);
             border-radius: 8px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             padding: 20px;
             background-color: var(--nord0);
-            overflow-x: auto;
+            overflow: hidden;
             color: var(--nord4);
         }
-
-        .file-viewer .code-body pre {
+        
+        .file-viewer .content-body.code pre {
             margin: 0;
+            overflow-x: auto;
         }
-
+        
         .error {
             color: var(--nord11);
             padding: 20px;
@@ -491,7 +494,7 @@
         <div class="spinner"></div>
         <div class="loading-text">Caricamento...</div>
     </div>
-
+    
     {% macro file_icon(ext) %}
         {% if ext == '.pdf' %}
             <svg class="icon icon-pdf" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 6l5 5H14V6z"/></svg>
@@ -505,8 +508,6 @@
             <svg class="icon icon-css" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 1022 12 10 10 0 0012 2zm0 16a6 6 0 116-6 6 6 0 01-6 6zm-3-4a1 1 0 111-1 1 1 0 01-1 1zM15 12a1 1 0 11-1-1 1 1 0 011 1z"/></svg>
         {% elif ext == '.js' %}
             <svg class="icon icon-js" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 1022 12 10 10 0 0012 2zm-4 13a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
-        {% elif ext in ['.jpg', '.jpeg', '.png', '.gif'] %}
-            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
         {% else %}
             <svg class="icon icon-file" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 6v4h4L14 6z"/></svg>
         {% endif %}
@@ -544,15 +545,11 @@
             </a>
         </div>
         <div class="file-viewer card">
-            <div class="code-header">
+            <div class="content-header">
                 {{ file_name }}
             </div>
-            <div class="code-body">
-                {% if is_text_file %}
-                    {{ content | safe }}
-                {% else %}
-                    <p class="error" role="alert">Questo tipo di file non è un file di testo e non può essere visualizzato. Prova ad aprirlo con un'applicazione esterna.</p>
-                {% endif %}
+            <div class="content-body code">
+                <pre>{{ content | safe }}</pre>
             </div>
         </div>
 
@@ -646,15 +643,12 @@
             }
         });
 
-        // Nasconde il caricatore al caricamento completo della pagina
         window.addEventListener('load', () => {
             const overlay = document.getElementById('loadingOverlay');
             if (overlay) {
                 overlay.classList.remove('visible');
             }
         });
-
-        // Non è più necessario gestire l'evento popstate, poiché il caricamento è ora gestito lato server.
     </script>
 </body>
 </html>
