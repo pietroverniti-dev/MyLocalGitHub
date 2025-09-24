@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizzatore Repository Locale</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #24292e; background-color: #f1f2f5; }
+        h1, h2 { color: #0366d6; }
+        .container { border: 1px solid #e1e4e8; border-radius: 6px; padding: 20px; background-color: #fff; margin-top: 20px; }
+        input[type="text"] { width: 100%; padding: 10px; box-sizing: border-box; font-size: 16px; border: 1px solid #e1e4e8; border-radius: 6px; }
+        button { padding: 12px 20px; background-color: #2ea44f; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 15px; }
+        button:hover { background-color: #2c974b; }
+        
+        .breadcrumb { margin-top: -10px; margin-bottom: 20px; font-size: 16px; }
+        .breadcrumb a { color: #0366d6; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        
+        .file-list { border: 1px solid #e1e4e8; border-radius: 6px; margin-top: 20px; }
+        .file-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #e1e4e8; background-color: #fff; transition: background-color 0.2s ease; }
+        .file-item:last-child { border-bottom: none; }
+        .file-item:hover { background-color: #fafbfc; }
+        
+        .file-icon { width: 16px; height: 16px; margin-right: 10px; }
+        .icon-file { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="#6a737d" d="M3.75 3.5h5.5l1.5 1.5v6.5a.75.75 0 0 1-.75.75H4.25a.75.75 0 0 1-.75-.75V4.25a.75.75 0 0 1 .75-.75z"/></svg>'); }
+        .icon-folder { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="#0366d6" d="M14.5 3h-6L7 1.5H1.5A1.5 1.5 0 0 0 0 3v10a1.5 1.5 0 0 0 1.5 1.5h13a1.5 1.5 0 0 0 1.5-1.5V4.5a1.5 1.5 0 0 0-1.5-1.5z"/></svg>'); }
+        
+        a { text-decoration: none; color: #0366d6; }
+        a:hover { text-decoration: underline; }
+        
+        .readme-container { border: 1px solid #e1e4e8; border-radius: 6px; padding: 20px; background-color: #fff; margin-bottom: 20px; }
+        .readme-container h1, .readme-container h2, .readme-container h3 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        .readme-container pre { background-color: #f6f8fa; border-radius: 6px; padding: 16px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; }
+        
+        .code-container { border: 1px solid #e1e4e8; border-radius: 6px; margin-top: 20px; overflow: hidden; background-color: #fff; }
+        .code-header { background-color: #f6f8fa; padding: 10px 15px; border-bottom: 1px solid #e1e4e8; font-weight: bold; }
+        .code-body { padding: 15px; }
+        
+        .highlight { font-size: 14px; line-height: 1.45; overflow-x: auto; }
+        {{ pygments_css | safe }}
+        
+        .error { color: #d73a49; padding: 20px; border: 1px solid #d73a49; background-color: #fff5f5; border-radius: 6px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    {% if view_type == 'form' %}
+        <h1>Visualizzatore Repository Locale</h1>
+        <div class="container">
+            <h2>Inserisci il Percorso del Repository</h2>
+            <form action="/" method="post">
+                <input type="text" name="repo_path" placeholder="es. C:\Users\TuoNome\Documenti\MyProject" required>
+                <button type="submit">Imposta e Sfoglia</button>
+            </form>
+        </div>
+    {% elif view_type == 'viewer' %}
+        <div class="breadcrumb">
+            <a href="javascript:history.back()">← Torna indietro</a>
+        </div>
+        <h1>Visualizzazione: <code>{{ file_name }}</code></h1>
+        {% if is_text_file %}
+            <div class="code-container">
+                <div class="code-body">
+                    {{ content | safe }}
+                </div>
+            </div>
+        {% else %}
+            <p class="error">Questo tipo di file non è un file di testo e non può essere visualizzato.</p>
+        {% endif %}
+    {% elif view_type == 'browser' %}
+        <div class="breadcrumb">
+            <a href="/">Cambia cartella</a> / 
+            {% if current_subpath %}
+                <a href="/{{ current_subpath | dirname }}">..</a> /
+                <span>{{ current_subpath.split('/')[-1] }}</span>
+            {% else %}
+                <span>{{ REPO_BASE_PATH.split('/')[-1] }}</span>
+            {% endif %}
+        </div>
+        
+        {% if readme_html %}
+            <div class="readme-container">
+                {{ readme_html | safe }}
+            </div>
+        {% endif %}
+
+        <div class="file-list">
+            {% for item in items %}
+                <div class="file-item">
+                    <span class="file-icon icon-{{ item.icon }}"></span>
+                    <a href="/{{ item.url_path }}">{{ item.name }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</body>
+</html>
