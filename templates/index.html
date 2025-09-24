@@ -6,269 +6,418 @@
     <title>Visualizzatore Repository Locale</title>
     <style>
         /* Stili Generali e Reset */
+        :root {
+            --nord0: #2e3440;
+            --nord1: #3b4252;
+            --nord2: #434c5e;
+            --nord3: #4c566a;
+            --nord4: #d8dee9;
+            --nord5: #e5e9f0;
+            --nord6: #eceff4;
+            --nord7: #8fbcbb;
+            --nord8: #88c0d0;
+            --nord9: #81a1c1;
+            --nord10: #5e81ac;
+            --nord11: #bf616a;
+            --nord12: #d08770;
+            --nord13: #ebcb8b;
+            --nord14: #a3be8c;
+            --nord15: #b48ead;
+
+            --highlight-color: var(--nord9);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
             max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
-            color: #d8dee9;
-            background-color: #2e3440;
+            color: var(--nord4);
+            background-color: var(--nord0);
             line-height: 1.6;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Layout Generale */
+        .dots-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, var(--nord2) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.1;
+            z-index: -1;
+            animation: moveDots 200s linear infinite;
+        }
+
+        @keyframes moveDots {
+            0% { background-position: 0 0; }
+            100% { background-position: 2000px 2000px; }
+        }
+
+        /* Layout Generale e Card */
         .card {
-            background-color: #3b4252;
-            border: 1px solid #4c566a;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: var(--nord1);
+            border: 1px solid var(--nord3);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             padding: 24px;
             margin-top: 24px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
-        
+
         /* Stile Header */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding-bottom: 20px;
-            border-bottom: 1px solid #4c566a;
+            border-bottom: 1px solid var(--nord3);
             margin-bottom: 20px;
         }
+
         .header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: clamp(20px, 4vw, 28px);
             font-weight: 600;
-            color: #88c0d0;
+            color: var(--nord6);
+            text-shadow: 0 0 6px rgba(129, 161, 193, 0.3);
+            transition: text-shadow 0.3s ease;
         }
+
         .change-repo-btn {
-            padding: 10px 18px;
-            background-color: #3b4252;
-            border: 1px solid #4c566a;
-            border-radius: 6px;
+            padding: 12px 20px;
+            background: linear-gradient(45deg, var(--nord1) 0%, var(--nord2) 100%);
+            border: 1px solid var(--nord3);
+            border-radius: 8px;
             text-decoration: none;
-            color: #d8dee9;
+            color: var(--nord4);
             font-weight: 500;
-            transition: background-color 0.2s ease, transform 0.2s ease;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
         }
+
         .change-repo-btn:hover {
-            background-color: #434c5e;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, var(--nord2) 0%, var(--nord3) 100%);
+        }
+
+        .change-repo-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         /* Navigazione Breadcrumb */
         .breadcrumb {
-            font-size: 14px;
-            color: #8893a2;
+            font-size: clamp(12px, 3vw, 14px);
+            color: var(--nord3);
             margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
         }
+
         .breadcrumb a {
-            color: #81a1c1;
+            color: var(--nord9);
             text-decoration: none;
             transition: color 0.2s ease;
         }
+
         .breadcrumb a:hover {
-            color: #88c0d0;
+            color: var(--nord8);
         }
+
         .breadcrumb .separator {
             margin: 0 5px;
-            color: #4c566a;
+            color: var(--nord3);
+        }
+
+        .breadcrumb .current-path {
+            color: var(--nord5);
+            font-weight: 600;
         }
 
         /* Form di Input */
         .repo-form h2 {
-            font-size: 24px;
+            font-size: clamp(20px, 4vw, 24px);
             font-weight: 500;
             margin-bottom: 15px;
-            color: #eceff4;
+            color: var(--nord6);
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
         }
+
         .repo-form input[type="text"] {
             width: 100%;
             padding: 12px;
             box-sizing: border-box;
             font-size: 16px;
-            border: 1px solid #4c566a;
-            border-radius: 6px;
-            background-color: #2e3440;
-            color: #eceff4;
+            border: 1px solid var(--nord3);
+            border-radius: 8px;
+            background-color: var(--nord0);
+            color: var(--nord6);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
+
+        .repo-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 0 2px rgba(129, 161, 193, 0.5);
+        }
+
         .repo-form button {
             padding: 12px 20px;
-            background-color: #a3be8c;
-            color: #2e3440;
+            background-color: var(--nord14);
+            color: var(--nord0);
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             margin-top: 15px;
             width: 100%;
             font-weight: 600;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
         }
+
         .repo-form button:hover {
             background-color: #b4c99d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
         }
-        
+
+        .repo-form button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
         /* Lista File e Cartelle */
         .file-list {
-            border: 1px solid #4c566a;
-            border-radius: 8px;
-            background-color: #3b4252;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--nord3);
+            border-radius: 12px;
+            background-color: var(--nord1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             margin-top: 24px;
         }
+
         .file-list h3 {
             padding: 10px 20px;
             margin: 0;
-            color: #eceff4;
+            color: var(--nord6);
             font-weight: 600;
-            border-bottom: 1px solid #4c566a;
+            border-bottom: 1px solid var(--nord3);
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
         }
+
         .file-item {
             display: flex;
             align-items: center;
             padding: 12px 20px;
-            border-bottom: 1px solid #4c566a;
-            transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--nord3);
+            transition: all 0.2s ease, box-shadow 0.2s ease;
             text-decoration: none;
+            position: relative;
         }
+
         .file-item:last-child {
             border-bottom: none;
         }
+
         .file-item:hover {
-            background-color: #434c5e;
+            background-color: var(--nord2);
+            transform: translateX(3px);
+            box-shadow: inset 3px 0 0 var(--highlight-color), 0 0 8px rgba(129, 161, 193, 0.15);
         }
+
         .file-item .file-name {
             font-size: 16px;
             text-decoration: none;
-            color: #81a1c1;
+            color: var(--nord9);
             font-weight: 500;
             margin-left: 12px;
+            word-break: break-all;
+            transition: color 0.2s ease;
+            flex-grow: 1;
         }
-        .file-item .file-name:hover {
-            text-decoration: underline;
+
+        .file-item:hover .file-name {
+            color: var(--nord8);
         }
-        
+
+        /* Icone e Tooltip */
         .icon {
             flex-shrink: 0;
             width: 18px;
             height: 18px;
-            fill: #d8dee9;
+            fill: var(--nord4);
+            transition: fill 0.2s ease;
         }
-        .icon-folder { fill: #b48ead; }
-        .icon-file { fill: #d8dee9; }
-        .icon-pdf { fill: #bf616a; }
-        .icon-md { fill: #81a1c1; }
-        .icon-py { fill: #ebcb8b; }
-        .icon-html { fill: #e5e9f0; }
-        .icon-css { fill: #8fbcbb; }
-        .icon-js { fill: #ebcb8b; }
+
+        .file-item:hover .icon {
+            fill: var(--highlight-color);
+        }
+
+        .icon-folder { fill: var(--nord15); }
+        .icon-file { fill: var(--nord4); }
+        .icon-pdf { fill: var(--nord11); }
+        .icon-md { fill: var(--nord9); }
+        .icon-py { fill: var(--nord13); }
+        .icon-html { fill: var(--nord5); }
+        .icon-css { fill: var(--nord7); }
+        .icon-js { fill: var(--nord13); }
+        .icon-external {
+            margin-left: 8px;
+            fill: var(--nord9);
+            width: 14px;
+            height: 14px;
+        }
+
+        .tooltip {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .file-item:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
 
         /* Visualizzatore README */
         .readme-container {
-            border: 1px solid #4c566a;
-            border-radius: 8px;
+            border: 1px solid var(--nord3);
+            border-radius: 12px;
             padding: 24px;
-            background-color: #3b4252;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: var(--nord1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             margin-top: 24px;
             margin-bottom: 24px;
-            color: #d8dee9;
+            color: var(--nord4);
         }
+
         .readme-container h1, .readme-container h2, .readme-container h3, .readme-container h4, .readme-container h5, .readme-container h6 {
-            color: #eceff4;
+            color: var(--nord6);
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
         }
+
         .readme-container h1 {
-            border-bottom: 1px solid #4c566a;
+            border-bottom: 1px solid var(--nord3);
             padding-bottom: 0.3em;
             margin-top: 0;
         }
+
         .readme-container h2, .readme-container h3 {
-            border-bottom: 1px solid #4c566a;
+            border-bottom: 1px solid var(--nord3);
             padding-bottom: 0.3em;
             margin-top: 24px;
         }
+
         .readme-container a {
-            color: #81a1c1;
+            color: var(--nord9);
             text-decoration: none;
         }
+
         .readme-container a:hover {
             text-decoration: underline;
         }
+
         .readme-container pre {
-            background-color: #2e3440;
-            border-radius: 6px;
+            background-color: var(--nord0);
+            border-radius: 8px;
             padding: 16px;
             overflow-x: auto;
             font-family: 'Courier New', Courier, monospace;
         }
+
         .readme-container img {
             max-width: 100%;
-            border-radius: 6px;
+            border-radius: 8px;
         }
+
         .readme-container code {
-            background-color: #434c5e;
+            background-color: var(--nord2);
             padding: 2px 4px;
             border-radius: 4px;
         }
-        
+
         /* Stile per le tabelle */
         .readme-container table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            background-color: #3b4252;
-            border: 1px solid #4c566a;
+            background-color: var(--nord1);
+            border: 1px solid var(--nord3);
         }
+
         .readme-container th, .readme-container td {
-            border: 1px solid #4c566a;
+            border: 1px solid var(--nord3);
             padding: 10px;
             text-align: left;
         }
+
         .readme-container th {
-            background-color: #434c5e;
+            background-color: var(--nord2);
             font-weight: 600;
         }
+
         .readme-container tr:nth-child(even) {
-            background-color: #3b4252;
+            background-color: var(--nord1);
         }
 
         /* Visualizzatore File di Testo/Codice */
         .file-viewer {
             margin-top: 24px;
         }
+
         .file-viewer .code-header {
-            background-color: #3b4252;
+            background-color: var(--nord1);
             padding: 12px 20px;
-            border: 1px solid #4c566a;
+            border: 1px solid var(--nord3);
             border-bottom: none;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
             font-weight: bold;
-            color: #eceff4;
+            color: var(--nord6);
         }
+
         .file-viewer .code-body {
-            border: 1px solid #4c566a;
+            border: 1px solid var(--nord3);
             border-radius: 8px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             padding: 20px;
-            background-color: #2e3440;
+            background-color: var(--nord0);
             overflow-x: auto;
-            color: #d8dee9;
+            color: var(--nord4);
         }
+
         .file-viewer .code-body pre {
             margin: 0;
         }
+
         .error {
-            color: #bf616a;
+            color: var(--nord11);
             padding: 20px;
-            border: 1px solid #4c566a;
-            background-color: #434c5e;
+            border: 1px solid var(--nord3);
+            background-color: var(--nord2);
             border-radius: 6px;
             margin-top: 20px;
         }
@@ -280,12 +429,69 @@
         .highlight .lineno {
             padding-right: 1em;
             text-align: right;
-            border-right: 1px solid #4c566a;
-            color: #d8dee9;
+            border-right: 1px solid var(--nord3);
+            color: var(--nord4);
+        }
+
+        /* Stili per il caricamento */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(46, 52, 64, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loading-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--nord8);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--nord6);
+            font-size: 18px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
         }
     </style>
 </head>
 <body>
+    <div class="dots-bg"></div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Caricamento...</div>
+    </div>
+
     {% macro file_icon(ext) %}
         {% if ext == '.pdf' %}
             <svg class="icon icon-pdf" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 6l5 5H14V6z"/></svg>
@@ -302,7 +508,7 @@
         {% elif ext in ['.jpg', '.jpeg', '.png', '.gif'] %}
             <svg class="icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
         {% else %}
-            <svg class="icon icon-file" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm2 16h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4V16zM14 6v4h4L14 6z"/></svg>
+            <svg class="icon icon-file" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 6v4h4L14 6z"/></svg>
         {% endif %}
     {% endmacro %}
 
@@ -310,25 +516,34 @@
         <svg class="icon icon-folder" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8L10 4z"/></svg>
     {% endmacro %}
 
+    {% macro external_link_icon() %}
+        <svg class="icon icon-external" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 12h-2v2h2a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v7h2v-2h12v-5H5v5h2v2H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2V14a2 2 0 00-2-2z"/></svg>
+    {% endmacro %}
+
     {% if view_type == 'form' %}
         <div class="header">
             <h1>Visualizzatore Repository Locale</h1>
-            <a href="{{ url_for('logout') }}" class="change-repo-btn">Esci</a>
+            <a href="{{ url_for('logout') }}" class="change-repo-btn" role="button">Esci</a>
         </div>
         <div class="card repo-form">
             <h2>Inserisci il percorso del repository</h2>
             <form action="/" method="post">
-                <input type="text" name="repo_path" placeholder="es. C:\Users\TuoNome\Documenti\MyProject" required>
-                <button type="submit">Imposta e Sfoglia</button>
+                <input type="text" name="repo_path" placeholder="es. C:\Users\TuoNome\Documenti\MyProject" required aria-label="Percorso del repository">
+                <button type="submit" role="button">Imposta e Sfoglia</button>
             </form>
+            {% if error_message %}
+                <p class="error" role="alert" style="margin-top: 15px;">{{ error_message }}</p>
+            {% endif %}
         </div>
 
     {% elif view_type == 'viewer' %}
         <div class="header">
             <h1>Visualizzazione File</h1>
-            <a href="javascript:history.back()" class="change-repo-btn">← Torna indietro</a>
+            <a href="{{ url_for('view_repo', subpath=parent_path) }}" class="change-repo-btn" role="button" aria-label="Torna indietro">
+                ← Torna indietro
+            </a>
         </div>
-        <div class="file-viewer">
+        <div class="file-viewer card">
             <div class="code-header">
                 {{ file_name }}
             </div>
@@ -336,7 +551,7 @@
                 {% if is_text_file %}
                     {{ content | safe }}
                 {% else %}
-                    <p class="error">Questo tipo di file non è un file di testo e non può essere visualizzato.</p>
+                    <p class="error" role="alert">Questo tipo di file non è un file di testo e non può essere visualizzato. Prova ad aprirlo con un'applicazione esterna.</p>
                 {% endif %}
             </div>
         </div>
@@ -344,80 +559,102 @@
     {% elif view_type == 'browser' %}
         <div class="header">
             <h1>Esplora Repository</h1>
-            <a href="{{ url_for('logout') }}" class="change-repo-btn">Esci</a>
+            <a href="{{ url_for('logout') }}" class="change-repo-btn" role="button">Esci</a>
         </div>
-        <div class="breadcrumb">
-            <a href="/">Repository Principale</a>
+        <div class="breadcrumb" aria-label="Navigazione percorso">
+            <a href="/" onclick="showLoading();" aria-current="{{ 'page' if breadcrumb_parts | length == 0 else 'false' }}">Repository Principale</a>
             {% for part in breadcrumb_parts %}
-                <span class="separator">/</span>
-                <a href="{{ url_for('view_repo', subpath=part.url_path) }}">{{ part.name }}</a>
+                <span class="separator" aria-hidden="true">/</span>
+                <a href="{{ url_for('view_repo', subpath=part.url_path) }}" onclick="showLoading();" aria-current="{{ 'page' if loop.last else 'false' }}">{{ part.name }}</a>
             {% endfor %}
         </div>
-        
-        <div class="file-list">
-            <h3 style="padding: 10px 20px; margin: 0; color: #eceff4; font-weight: 600; border-bottom: 1px solid #4c566a;">Contenuto della cartella</h3>
+
+        <div class="file-list" role="list">
+            <h3>Contenuto della cartella</h3>
             {% if parent_path is not none %}
-                <a href="{{ url_for('view_repo', subpath=parent_path) }}" class="file-item">
+                <a href="{{ url_for('view_repo', subpath=parent_path) }}" class="file-item" role="listitem" onclick="showLoading();">
                     {{ folder_icon() }}
                     <span class="file-name" style="font-style: italic;">.. (Vai su)</span>
                 </a>
             {% endif %}
             {% for item in items %}
-                <a href="{{ url_for('view_repo', subpath=item.url_path) }}" class="file-item" {% if item.ext == '.pdf' %}target="_blank"{% endif %}>
+                <a href="{{ url_for('view_repo', subpath=item.url_path) }}" class="file-item" role="listitem" {% if item.ext == '.pdf' %}target="_blank" rel="noopener noreferrer"{% endif %} onclick="showLoading();">
                     {% if item.type == 'dir' %}
                         {{ folder_icon() }}
+                        <span class="file-name">{{ item.name }}</span>
                     {% else %}
                         {{ file_icon(item.ext) }}
+                        <span class="file-name">{{ item.name }}</span>
                     {% endif %}
-                    <span class="file-name">{{ item.name }}</span>
+                    {% if item.ext == '.pdf' %}
+                        {{ external_link_icon() }}
+                        <span class="tooltip">Si apre in una nuova scheda</span>
+                    {% endif %}
                 </a>
             {% endfor %}
         </div>
 
         {% if readme_html %}
-            <div class="readme-container" id="readme-content">
+            <div class="readme-container card" id="readme-content">
                 {{ readme_html | safe }}
             </div>
         {% endif %}
     {% endif %}
 
     <script>
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('visible');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', (event) => {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', showLoading);
+            }
+
             const readmeContainer = document.getElementById('readme-content');
             if (readmeContainer) {
                 readmeContainer.addEventListener('click', (e) => {
                     const target = e.target;
                     const link = target.closest('a');
-                    
+
                     if (link) {
                         const href = link.getAttribute('href');
-                        
-                        // Gestisce i link che sono ancore interne (#)
+
                         if (href.startsWith('#')) {
                             return;
                         }
 
-                        // Gestisce i link esterni (URL completi)
                         if (href.startsWith('http://') || href.startsWith('https://')) {
                             e.preventDefault();
                             window.open(href, '_blank');
                             return;
                         }
 
-                        // Impedisce la navigazione predefinita per i link interni
                         e.preventDefault();
-                        
-                        // Costruisci il nuovo percorso relativo
+                        showLoading();
+
                         const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname.slice(0, -1) : window.location.pathname;
-                        
                         const newUrl = new URL(href, window.location.origin + currentPath + '/');
-                        
-                        // Reindirizza il browser all'URL corretto gestito da Flask
+
                         window.location.href = newUrl.pathname;
                     }
                 });
             }
         });
+
+        // Nasconde il caricatore al caricamento completo della pagina
+        window.addEventListener('load', () => {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('visible');
+            }
+        });
+
+        // Non è più necessario gestire l'evento popstate, poiché il caricamento è ora gestito lato server.
     </script>
 </body>
 </html>
