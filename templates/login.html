@@ -7,60 +7,67 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f7f9fc;
+            background-color: #2e3440;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            color: #333;
+            color: #d8dee9;
         }
         .login-container {
-            background-color: #fff;
+            background-color: #3b4252;
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             text-align: center;
             width: 100%;
             max-width: 400px;
             box-sizing: border-box;
+            border: 1px solid #4c566a;
         }
         h1 {
-            color: #333;
+            color: #88c0d0;
             margin-bottom: 1rem;
             font-size: 1.8rem;
         }
         p {
-            color: #555;
+            color: #d8dee9;
             margin-bottom: 1.5rem;
         }
         input[type="password"] {
             width: 100%;
             padding: 0.75rem;
             margin: 0.5rem 0;
-            border: 1px solid #ddd;
+            border: 1px solid #4c566a;
             border-radius: 8px;
             box-sizing: border-box;
             font-size: 1rem;
+            background-color: #434c5e;
+            color: #d8dee9;
         }
         button {
             width: 100%;
             padding: 0.75rem;
             border: none;
             border-radius: 8px;
-            background-color: #007bff;
-            color: #fff;
+            background-color: #a3be8c;
+            color: #2e3440;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #b4c99d;
+            transform: translateY(-1px);
         }
         .error {
-            color: #dc3545;
+            color: #bf616a;
             margin-top: 1rem;
+            background-color: #4c566a;
+            padding: 10px;
+            border-radius: 6px;
         }
     </style>
 </head>

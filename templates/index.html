@@ -157,8 +157,6 @@
             flex-shrink: 0;
             width: 18px;
             height: 18px;
-            background-size: contain;
-            background-repeat: no-repeat;
             fill: #d8dee9;
         }
         .icon-folder { fill: #b48ead; }
@@ -181,11 +179,18 @@
             margin-bottom: 24px;
             color: #d8dee9;
         }
-        .readme-container h1, .readme-container h2, .readme-container h3 {
+        .readme-container h1, .readme-container h2, .readme-container h3, .readme-container h4, .readme-container h5, .readme-container h6 {
+            color: #eceff4;
+        }
+        .readme-container h1 {
+            border-bottom: 1px solid #4c566a;
+            padding-bottom: 0.3em;
+            margin-top: 0;
+        }
+        .readme-container h2, .readme-container h3 {
             border-bottom: 1px solid #4c566a;
             padding-bottom: 0.3em;
             margin-top: 24px;
-            color: #eceff4;
         }
         .readme-container a {
             color: #81a1c1;
@@ -267,37 +272,48 @@
             border-radius: 6px;
             margin-top: 20px;
         }
+
+        /* Stile per il code highlighting di Pygments */
+        {{ pygments_style | safe }}
+        .highlight table { width: auto; }
+        .highlight pre { margin: 0; }
+        .highlight .lineno {
+            padding-right: 1em;
+            text-align: right;
+            border-right: 1px solid #4c566a;
+            color: #d8dee9;
+        }
     </style>
 </head>
 <body>
-    {% macro file_icon(filename) %}
-        {% set ext = filename.split('.')[-1] | lower %}
-        {% if ext == 'pdf' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm2 16h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4V16zM14 6v4h4L14 6z"/></svg>
-        {% elif ext == 'md' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2zM8 12h3V9h2v3h3l-4 4-4-4z"/></svg>
-        {% elif ext == 'py' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-1 16a2 2 0 11-2-2 2 2 0 012 2zM15 8a2 2 0 11-2-2 2 2 0 012 2z"/></svg>
-        {% elif ext == 'html' or ext == 'htm' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-2 15l-5-5 5-5m4 10l5-5-5-5"/></svg>
-        {% elif ext == 'css' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 16a6 6 0 116-6 6 6 0 01-6 6zm-3-4a1 1 0 111-1 1 1 0 01-1 1zM15 12a1 1 0 11-1-1 1 1 0 011 1z"/></svg>
-        {% elif ext == 'js' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-4 13a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
-        {% elif ext == 'jpg' or ext == 'jpeg' or ext == 'png' or ext == 'gif' %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
+    {% macro file_icon(ext) %}
+        {% if ext == '.pdf' %}
+            <svg class="icon icon-pdf" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 6l5 5H14V6z"/></svg>
+        {% elif ext == '.md' %}
+            <svg class="icon icon-md" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 5v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM9 13v-2h6v2h-6zm-2 4h10v-2H7v2zM9 9h6V7H9v2z"/></svg>
+        {% elif ext == '.py' %}
+            <svg class="icon icon-py" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 1022 12 10 10 0 0012 2zm-1 16a2 2 0 11-2-2 2 2 0 012 2zM15 8a2 2 0 11-2-2 2 2 0 012 2z"/></svg>
+        {% elif ext in ['.html', '.htm'] %}
+            <svg class="icon icon-html" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 1022 12 10 10 0 0012 2zm-2 15l-5-5 5-5m4 10l5-5-5-5"/></svg>
+        {% elif ext == '.css' %}
+            <svg class="icon icon-css" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 1022 12 10 10 0 0012 2zm0 16a6 6 0 116-6 6 6 0 01-6 6zm-3-4a1 1 0 111-1 1 1 0 01-1 1zM15 12a1 1 0 11-1-1 1 1 0 011 1z"/></svg>
+        {% elif ext == '.js' %}
+            <svg class="icon icon-js" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2A10 10 0 1022 12 10 10 0 0012 2zm-4 13a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
+        {% elif ext in ['.jpg', '.jpeg', '.png', '.gif'] %}
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
         {% else %}
-            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm2 16h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4V16zM14 6v4h4L14 6z"/></svg>
+            <svg class="icon icon-file" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm2 16h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4V16zM14 6v4h4L14 6z"/></svg>
         {% endif %}
     {% endmacro %}
 
     {% macro folder_icon() %}
-        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8L10 4z"/></svg>
+        <svg class="icon icon-folder" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8L10 4z"/></svg>
     {% endmacro %}
 
     {% if view_type == 'form' %}
         <div class="header">
             <h1>Visualizzatore Repository Locale</h1>
+            <a href="{{ url_for('logout') }}" class="change-repo-btn">Esci</a>
         </div>
         <div class="card repo-form">
             <h2>Inserisci il percorso del repository</h2>
@@ -328,31 +344,30 @@
     {% elif view_type == 'browser' %}
         <div class="header">
             <h1>Esplora Repository</h1>
-            <a href="/" class="change-repo-btn">Cambia Cartella</a>
+            <a href="{{ url_for('logout') }}" class="change-repo-btn">Esci</a>
         </div>
         <div class="breadcrumb">
-            <a href="/">{{ REPO_BASE_PATH.split('/')[-1] }}</a>
-            {% set parts = current_subpath.split('/') if current_subpath else [] %}
-            {% for part in parts %}
+            <a href="/">Repository Principale</a>
+            {% for part in breadcrumb_parts %}
                 <span class="separator">/</span>
-                <a href="{{ url_for('view_repo', subpath=('/'.join(parts[:loop.index + 1]))) }}">{{ part }}</a>
+                <a href="{{ url_for('view_repo', subpath=part.url_path) }}">{{ part.name }}</a>
             {% endfor %}
         </div>
         
         <div class="file-list">
-            <h3 style="padding: 10px 20px; margin: 0; color: #eceff4; font-weight: 600; border-bottom: 1px solid #4c566a;">Struttura del repository</h3>
-            {% if current_subpath %}
-                <a href="/{{ current_subpath | dirname }}" class="file-item">
+            <h3 style="padding: 10px 20px; margin: 0; color: #eceff4; font-weight: 600; border-bottom: 1px solid #4c566a;">Contenuto della cartella</h3>
+            {% if parent_path is not none %}
+                <a href="{{ url_for('view_repo', subpath=parent_path) }}" class="file-item">
                     {{ folder_icon() }}
                     <span class="file-name" style="font-style: italic;">.. (Vai su)</span>
                 </a>
             {% endif %}
             {% for item in items %}
-                <a href="/{{ item.url_path }}" class="file-item">
+                <a href="{{ url_for('view_repo', subpath=item.url_path) }}" class="file-item" {% if item.ext == '.pdf' %}target="_blank"{% endif %}>
                     {% if item.type == 'dir' %}
                         {{ folder_icon() }}
                     {% else %}
-                        {{ file_icon(item.name) }}
+                        {{ file_icon(item.ext) }}
                     {% endif %}
                     <span class="file-name">{{ item.name }}</span>
                 </a>
@@ -392,11 +407,13 @@
                         // Impedisce la navigazione predefinita per i link interni
                         e.preventDefault();
                         
+                        // Costruisci il nuovo percorso relativo
                         const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname.slice(0, -1) : window.location.pathname;
-                        const absolutePath = new URL(href, window.location.origin + currentPath + '/').pathname;
+                        
+                        const newUrl = new URL(href, window.location.origin + currentPath + '/');
                         
                         // Reindirizza il browser all'URL corretto gestito da Flask
-                        window.location.href = absolutePath;
+                        window.location.href = newUrl.pathname;
                     }
                 });
             }
