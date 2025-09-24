@@ -11,17 +11,18 @@
             max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
-            color: #2e3440; /* Grigio scuro per il testo */
-            background-color: #e5e9f0; /* Sfondo grigio molto chiaro */
+            color: #d8dee9;
+            background-color: #2e3440;
             line-height: 1.6;
+            transition: background-color 0.3s ease;
         }
 
         /* Layout Generale */
         .card {
-            background-color: #eceff4; /* Grigio chiaro per i pannelli */
-            border: 1px solid #d8dee9;
+            background-color: #3b4252;
+            border: 1px solid #4c566a;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             padding: 24px;
             margin-top: 24px;
         }
@@ -32,49 +33,49 @@
             align-items: center;
             justify-content: space-between;
             padding-bottom: 20px;
-            border-bottom: 1px solid #d8dee9;
+            border-bottom: 1px solid #4c566a;
             margin-bottom: 20px;
         }
         .header h1 {
             margin: 0;
             font-size: 28px;
             font-weight: 600;
-            color: #5e81ac; /* Blu pastello */
+            color: #88c0d0;
         }
         .change-repo-btn {
             padding: 10px 18px;
-            background-color: #e5e9f0;
-            border: 1px solid #d8dee9;
+            background-color: #3b4252;
+            border: 1px solid #4c566a;
             border-radius: 6px;
             text-decoration: none;
-            color: #4c566a;
+            color: #d8dee9;
             font-weight: 500;
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
         .change-repo-btn:hover {
-            background-color: #d8dee9;
+            background-color: #434c5e;
             transform: translateY(-1px);
         }
 
         /* Navigazione Breadcrumb */
         .breadcrumb {
             font-size: 14px;
-            color: #4c566a;
+            color: #8893a2;
             margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
         }
         .breadcrumb a {
-            color: #5e81ac;
+            color: #81a1c1;
             text-decoration: none;
             transition: color 0.2s ease;
         }
         .breadcrumb a:hover {
-            color: #81a1c1;
+            color: #88c0d0;
         }
         .breadcrumb .separator {
             margin: 0 5px;
-            color: #acb1bc;
+            color: #4c566a;
         }
 
         /* Form di Input */
@@ -82,20 +83,23 @@
             font-size: 24px;
             font-weight: 500;
             margin-bottom: 15px;
+            color: #eceff4;
         }
         .repo-form input[type="text"] {
             width: 100%;
             padding: 12px;
             box-sizing: border-box;
             font-size: 16px;
-            border: 1px solid #d8dee9;
+            border: 1px solid #4c566a;
             border-radius: 6px;
-            box-shadow: inset 0 1px 2px rgba(27, 31, 35, 0.075);
+            background-color: #2e3440;
+            color: #eceff4;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         .repo-form button {
             padding: 12px 20px;
-            background-color: #a3be8c; /* Verde pastello */
-            color: white;
+            background-color: #a3be8c;
+            color: #2e3440;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -111,66 +115,87 @@
         
         /* Lista File e Cartelle */
         .file-list {
-            border: 1px solid #d8dee9;
+            border: 1px solid #4c566a;
             border-radius: 8px;
-            background-color: #eceff4;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            background-color: #3b4252;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-top: 24px;
         }
+        .file-list h3 {
+            padding: 10px 20px;
+            margin: 0;
+            color: #eceff4;
+            font-weight: 600;
+            border-bottom: 1px solid #4c566a;
+        }
         .file-item {
-            display: grid;
-            grid-template-columns: 24px 1fr auto;
+            display: flex;
             align-items: center;
             padding: 12px 20px;
-            border-bottom: 1px solid #d8dee9;
+            border-bottom: 1px solid #4c566a;
             transition: background-color 0.2s ease;
+            text-decoration: none;
         }
         .file-item:last-child {
             border-bottom: none;
         }
         .file-item:hover {
-            background-color: #d8dee9;
+            background-color: #434c5e;
         }
-        .file-item a {
+        .file-item .file-name {
             font-size: 16px;
             text-decoration: none;
-            color: #5e81ac;
+            color: #81a1c1;
             font-weight: 500;
+            margin-left: 12px;
         }
-        .file-item a:hover {
+        .file-item .file-name:hover {
             text-decoration: underline;
         }
         
         .icon {
+            flex-shrink: 0;
             width: 18px;
             height: 18px;
-            margin-right: 12px;
             background-size: contain;
             background-repeat: no-repeat;
+            fill: #d8dee9;
         }
-        .icon-file {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="#4c566a" d="M3.75 3.5h5.5l1.5 1.5v6.5a.75.75 0 0 1-.75.75H4.25a.75.75 0 0 1-.75-.75V4.25a.75.75 0 0 1 .75-.75z"/></svg>');
-        }
-        .icon-folder {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="#5e81ac" d="M14.5 3h-6L7 1.5H1.5A1.5 1.5 0 0 0 0 3v10a1.5 1.5 0 0 0 1.5 1.5h13a1.5 1.5 0 0 0 1.5-1.5V4.5a1.5 1.5 0 0 0-1.5-1.5z"/></svg>');
-        }
-        
+        .icon-folder { fill: #b48ead; }
+        .icon-file { fill: #d8dee9; }
+        .icon-pdf { fill: #bf616a; }
+        .icon-md { fill: #81a1c1; }
+        .icon-py { fill: #ebcb8b; }
+        .icon-html { fill: #e5e9f0; }
+        .icon-css { fill: #8fbcbb; }
+        .icon-js { fill: #ebcb8b; }
+
         /* Visualizzatore README */
         .readme-container {
-            border: 1px solid #d8dee9;
+            border: 1px solid #4c566a;
             border-radius: 8px;
             padding: 24px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            background-color: #3b4252;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 24px;
             margin-bottom: 24px;
+            color: #d8dee9;
         }
         .readme-container h1, .readme-container h2, .readme-container h3 {
-            border-bottom: 1px solid #e5e9f0;
+            border-bottom: 1px solid #4c566a;
             padding-bottom: 0.3em;
             margin-top: 24px;
+            color: #eceff4;
+        }
+        .readme-container a {
+            color: #81a1c1;
+            text-decoration: none;
+        }
+        .readme-container a:hover {
+            text-decoration: underline;
         }
         .readme-container pre {
-            background-color: #f6f8fa;
+            background-color: #2e3440;
             border-radius: 6px;
             padding: 16px;
             overflow-x: auto;
@@ -181,30 +206,30 @@
             border-radius: 6px;
         }
         .readme-container code {
-            background-color: #e5e9f0;
+            background-color: #434c5e;
             padding: 2px 4px;
             border-radius: 4px;
         }
-
+        
         /* Stile per le tabelle */
         .readme-container table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            background-color: #ffffff;
-            border: 1px solid #d8dee9;
+            background-color: #3b4252;
+            border: 1px solid #4c566a;
         }
         .readme-container th, .readme-container td {
-            border: 1px solid #d8dee9;
+            border: 1px solid #4c566a;
             padding: 10px;
             text-align: left;
         }
         .readme-container th {
-            background-color: #eceff4;
+            background-color: #434c5e;
             font-weight: 600;
         }
         .readme-container tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #3b4252;
         }
 
         /* Visualizzatore File di Testo/Codice */
@@ -212,41 +237,63 @@
             margin-top: 24px;
         }
         .file-viewer .code-header {
-            background-color: #eceff4;
+            background-color: #3b4252;
             padding: 12px 20px;
-            border: 1px solid #d8dee9;
+            border: 1px solid #4c566a;
             border-bottom: none;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
             font-weight: bold;
+            color: #eceff4;
         }
         .file-viewer .code-body {
-            border: 1px solid #d8dee9;
+            border: 1px solid #4c566a;
             border-radius: 8px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             padding: 20px;
-            background-color: #fff;
+            background-color: #2e3440;
             overflow-x: auto;
+            color: #d8dee9;
         }
         .file-viewer .code-body pre {
             margin: 0;
         }
-
-        /* Stile Pygments per l'evidenziazione del codice */
-        {{ pygments_css | safe }}
-
         .error {
-            color: #bf616a; /* Rosso pastello */
+            color: #bf616a;
             padding: 20px;
-            border: 1px solid #d8dee9;
-            background-color: #fff5f5;
+            border: 1px solid #4c566a;
+            background-color: #434c5e;
             border-radius: 6px;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
+    {% macro file_icon(filename) %}
+        {% set ext = filename.split('.')[-1] | lower %}
+        {% if ext == 'pdf' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm2 16h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4V16zM14 6v4h4L14 6z"/></svg>
+        {% elif ext == 'md' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2zM8 12h3V9h2v3h3l-4 4-4-4z"/></svg>
+        {% elif ext == 'py' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-1 16a2 2 0 11-2-2 2 2 0 012 2zM15 8a2 2 0 11-2-2 2 2 0 012 2z"/></svg>
+        {% elif ext == 'html' or ext == 'htm' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-2 15l-5-5 5-5m4 10l5-5-5-5"/></svg>
+        {% elif ext == 'css' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 16a6 6 0 116-6 6 6 0 01-6 6zm-3-4a1 1 0 111-1 1 1 0 01-1 1zM15 12a1 1 0 11-1-1 1 1 0 011 1z"/></svg>
+        {% elif ext == 'js' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-4 13a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
+        {% elif ext == 'jpg' or ext == 'jpeg' or ext == 'png' or ext == 'gif' %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14a4 4 0 114-4 4 4 0 01-4 4z"/></svg>
+        {% else %}
+            <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zm2 16h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4V16zM14 6v4h4L14 6z"/></svg>
+        {% endif %}
+    {% endmacro %}
+
+    {% macro folder_icon() %}
+        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8L10 4z"/></svg>
+    {% endmacro %}
 
     {% if view_type == 'form' %}
         <div class="header">
@@ -292,27 +339,68 @@
             {% endfor %}
         </div>
         
-        {% if readme_html %}
-            <div class="readme-container">
-                {{ readme_html | safe }}
-            </div>
-        {% endif %}
-
         <div class="file-list">
+            <h3 style="padding: 10px 20px; margin: 0; color: #eceff4; font-weight: 600; border-bottom: 1px solid #4c566a;">Struttura del repository</h3>
             {% if current_subpath %}
                 <a href="/{{ current_subpath | dirname }}" class="file-item">
-                    <span class="icon icon-folder"></span>
-                    <span style="color: #4c566a; font-style: italic;">.. (Vai su)</span>
+                    {{ folder_icon() }}
+                    <span class="file-name" style="font-style: italic;">.. (Vai su)</span>
                 </a>
             {% endif %}
             {% for item in items %}
                 <a href="/{{ item.url_path }}" class="file-item">
-                    <span class="icon icon-{{ item.icon }}"></span>
-                    <span>{{ item.name }}</span>
+                    {% if item.type == 'dir' %}
+                        {{ folder_icon() }}
+                    {% else %}
+                        {{ file_icon(item.name) }}
+                    {% endif %}
+                    <span class="file-name">{{ item.name }}</span>
                 </a>
             {% endfor %}
         </div>
+
+        {% if readme_html %}
+            <div class="readme-container" id="readme-content">
+                {{ readme_html | safe }}
+            </div>
+        {% endif %}
     {% endif %}
 
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const readmeContainer = document.getElementById('readme-content');
+            if (readmeContainer) {
+                readmeContainer.addEventListener('click', (e) => {
+                    const target = e.target;
+                    const link = target.closest('a');
+                    
+                    if (link) {
+                        const href = link.getAttribute('href');
+                        
+                        // Gestisce i link che sono ancore interne (#)
+                        if (href.startsWith('#')) {
+                            return;
+                        }
+
+                        // Gestisce i link esterni (URL completi)
+                        if (href.startsWith('http://') || href.startsWith('https://')) {
+                            e.preventDefault();
+                            window.open(href, '_blank');
+                            return;
+                        }
+
+                        // Impedisce la navigazione predefinita per i link interni
+                        e.preventDefault();
+                        
+                        const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname.slice(0, -1) : window.location.pathname;
+                        const absolutePath = new URL(href, window.location.origin + currentPath + '/').pathname;
+                        
+                        // Reindirizza il browser all'URL corretto gestito da Flask
+                        window.location.href = absolutePath;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

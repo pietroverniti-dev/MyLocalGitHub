@@ -74,8 +74,8 @@ def browse_directory(path, subpath, base_path):
             try:
                 with open(readme_path, 'r', encoding='utf-8', errors='ignore') as f:
                     readme_content = f.read()
-                    # Converte il Markdown in HTML con l'estensione 'tables' abilitata
-                    readme_html = Markup(markdown.markdown(readme_content, extensions=['tables']))
+                    # Converte il Markdown in HTML con l'estensione 'toc' per i link interni
+                    readme_html = Markup(markdown.markdown(readme_content, extensions=['tables', 'toc']))
             except Exception as e:
                 readme_html = f"Errore durante la lettura del file README.md: {e}"
 
@@ -121,7 +121,7 @@ def display_file(path, subpath):
         # Elenco dei tipi di file di testo supportati per la visualizzazione
         text_file_extensions = {
             '.txt', '.py', '.html', '.css', '.js', '.json', '.md', '.log', '.xml',
-            '.c', '.cpp', '.java', '.go', '.rs', '.php', '.sh', '.rb', '.pl'
+            '.c', '.cpp', '.java', '.go', '.rs', '.php', '.sh', '.rb', '.pl', '.tex'  # <--- Aggiunta l'estensione .tex
         }
         is_text_file = file_extension.lower() in text_file_extensions or 'text' in (mimetypes.guess_type(path)[0] or '')
 
@@ -142,10 +142,10 @@ def display_file(path, subpath):
             content = "Questo tipo di file non può essere visualizzato come testo."
         
         return render_template('index.html',
-                                view_type='viewer',
-                                file_name=os.path.basename(path),
-                                content=Markup(content),
-                                is_text_file=is_text_file)
+                               view_type='viewer',
+                               file_name=os.path.basename(path),
+                               content=Markup(content),
+                               is_text_file=is_text_file)
                                 
     except Exception as e:
         return f"<h1>Errore durante la lettura del file:</h1><p>{e}</p>", 500
