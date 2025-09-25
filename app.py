@@ -91,6 +91,14 @@ def view_repo(subpath=''):
         
     repo_base_path = session.get('repo_path')
 
+    # MODIFICA: se il percorso non è impostato nella sessione, lo impostiamo qui
+    if repo_base_path is None:
+        # Imposta il percorso desiderato in modo automatico.
+        # Usa doppi backslash per assicurarti che il percorso sia corretto.
+        session['repo_path'] = r'C:\Users\pietr\OneDrive\Desktop\MyNotes-main'
+        return redirect(url_for('view_repo', subpath=''))
+
+    # Se l'utente ha inviato un nuovo percorso tramite il form, gestiscilo.
     if request.method == 'POST':
         user_path = request.form.get('repo_path')
         if not user_path:
@@ -104,9 +112,6 @@ def view_repo(subpath=''):
         # Salva il percorso nella sessione
         session['repo_path'] = normalized_path
         return redirect(url_for('view_repo', subpath=''))
-
-    if repo_base_path is None:
-        return render_template('index.html', view_type='form')
 
     # Costruisci il percorso completo e valida la navigazione
     full_path = os.path.join(repo_base_path, subpath)
