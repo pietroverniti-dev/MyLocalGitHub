@@ -278,7 +278,7 @@
         .icon-html { fill: var(--nord5); }
         .icon-css { fill: var(--nord7); }
         .icon-js { fill: var(--nord13); }
-        .icon-copy { fill: var(--nord9); }
+        .icon-copy { fill: var(--nord4); } /* Colore base per l'icona copia */
         
         .tooltip {
             position: absolute;
@@ -301,6 +301,87 @@
         .file-item:hover .tooltip {
             opacity: 1;
             visibility: visible;
+        }
+
+        /* Visualizzatore File di Testo/Codice */
+        .file-viewer {
+            margin-top: 24px;
+        }
+
+        .file-viewer .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--nord1);
+            padding: 12px 20px;
+            border: 1px solid var(--nord3);
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+            color: var(--nord6);
+        }
+        
+        .file-viewer .content-header span {
+            font-weight: 500;
+            color: var(--nord6);
+            margin-right: 15px; /* Spazio dal pulsante */
+        }
+
+        .file-viewer .content-body {
+            border: 1px solid var(--nord3);
+            border-radius: 8px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            padding: 20px;
+            background-color: var(--nord0);
+            overflow: hidden;
+            color: var(--nord4);
+        }
+        
+        .file-viewer .content-body.code pre {
+            margin: 0;
+            overflow-x: auto;
+        }
+        
+        /* Stili per il pulsante Copia Codice */
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            background-color: var(--nord2);
+            border: 1px solid var(--nord3);
+            border-radius: 6px;
+            color: var(--nord4);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative; /* Per il feedback */
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--nord3);
+            border-color: var(--highlight-color);
+        }
+
+        .copy-btn .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            transition: fill 0.2s ease;
+        }
+
+        .copy-btn:hover .icon {
+            fill: var(--highlight-color);
+        }
+
+        .copy-feedback {
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
+
+        .copy-btn.copied .copy-feedback {
+            color: var(--nord14); /* Verde per successo */
         }
 
         /* Visualizzatore README */
@@ -384,38 +465,6 @@
             background-color: var(--nord1);
         }
 
-        /* Visualizzatore File di Testo/Codice */
-        .file-viewer {
-            margin-top: 24px;
-        }
-
-        .file-viewer .content-header {
-            background-color: var(--nord1);
-            padding: 12px 20px;
-            border: 1px solid var(--nord3);
-            border-bottom: none;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            font-weight: bold;
-            color: var(--nord6);
-        }
-
-        .file-viewer .content-body {
-            border: 1px solid var(--nord3);
-            border-radius: 8px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            padding: 20px;
-            background-color: var(--nord0);
-            overflow: hidden;
-            color: var(--nord4);
-        }
-        
-        .file-viewer .content-body.code pre {
-            margin: 0;
-            overflow-x: auto;
-        }
-        
         .error {
             color: var(--nord11);
             padding: 20px;
@@ -495,6 +544,7 @@
         <div class="loading-text">Caricamento...</div>
     </div>
     
+    <!-- Macro per Icone (Invariate) -->
     {% macro file_icon(ext) %}
         {% if ext == '.pdf' %}
             <svg class="icon icon-pdf" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 6l5 5H14V6z"/></svg>
@@ -520,6 +570,10 @@
     {% macro external_link_icon() %}
         <svg class="icon icon-external" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 12h-2v2h2a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v7h2v-2h12v-5H5v5h2v2H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2V14a2 2 0 00-2-2z"/></svg>
     {% endmacro %}
+    
+    {% macro copy_icon() %}
+        <svg class="icon icon-copy" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4a2 2 0 00-2 2v14h2V3h12V1zm5 4H8a2 2 0 00-2 2v14a2 2 0 002 2h13a2 2 0 002-2V7a2 2 0 00-2-2zm0 16H8V7h13v14z"/></svg>
+    {% endmacro %}
 
     {% if view_type == 'form' %}
         <div class="header">
@@ -531,6 +585,7 @@
             <form action="/" method="post">
                 <input type="text" name="repo_path" placeholder="es. C:\Users\TuoNome\Documenti\MyProject" required aria-label="Percorso del repository">
                 <button type="submit" role="button">Imposta e Sfoglia</button>
+                <input type="hidden" name="action" value="set_path">
             </form>
             {% if error_message %}
                 <p class="error" role="alert" style="margin-top: 15px;">{{ error_message }}</p>
@@ -544,12 +599,18 @@
                 ← Torna indietro
             </a>
         </div>
-        <div class="file-viewer card">
+        <div class="file-viewer">
+            <!-- Nuovo header con pulsante copia -->
             <div class="content-header">
-                {{ file_name }}
+                <span>{{ file_name }}</span>
+                <button id="copyCodeBtn" class="copy-btn" role="button" aria-label="Copia il codice">
+                    {{ copy_icon() }}
+                    <span id="copyFeedback" class="copy-feedback">Copia Codice</span>
+                </button>
             </div>
-            <div class="content-body code">
-                <pre>{{ content | safe }}</pre>
+            <div class="content-body card code">
+                <!-- Aggiunto ID per facilitare la copia del contenuto -->
+                <pre id="codeContent">{{ content | safe }}</pre>
             </div>
         </div>
 
@@ -599,19 +660,69 @@
     {% endif %}
 
     <script>
+        // Funzione per mostrare l'overlay di caricamento
         function showLoading() {
             const overlay = document.getElementById('loadingOverlay');
             if (overlay) {
                 overlay.classList.add('visible');
             }
         }
+        
+        // Funzione per copiare il codice negli appunti
+        function copyCode() {
+            const codePre = document.getElementById('codeContent');
+            const copyBtn = document.getElementById('copyCodeBtn');
+            const feedback = document.getElementById('copyFeedback');
+
+            if (codePre && copyBtn && feedback) {
+                // Se il codice è all'interno di un highlight Pygments, usa il div highlight
+                const contentSource = codePre.querySelector('.highlight') || codePre;
+                
+                // Crea un elemento temporaneo per selezionare il testo
+                const tempElement = document.createElement('textarea');
+                tempElement.value = contentSource.textContent;
+                document.body.appendChild(tempElement);
+                tempElement.select();
+
+                let success = false;
+                try {
+                    // Usa document.execCommand('copy') per la compatibilità con l'ambiente iframe
+                    success = document.execCommand('copy'); 
+                } catch (err) {
+                    console.error('Impossibile copiare il testo:', err);
+                }
+                
+                document.body.removeChild(tempElement);
+
+                if (success) {
+                    // Feedback visivo
+                    copyBtn.classList.add('copied');
+                    feedback.textContent = 'Copiato!';
+                    
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        feedback.textContent = 'Copia Codice';
+                    }, 2000);
+                } else {
+                    feedback.textContent = 'Errore Copia';
+                }
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', (event) => {
+            // 1. Inizializzazione della copia codice
+            const copyBtn = document.getElementById('copyCodeBtn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', copyCode);
+            }
+
+            // 2. Listener per il form di path
             const form = document.querySelector('form');
             if (form) {
                 form.addEventListener('submit', showLoading);
             }
 
+            // 3. Gestione link interni/esterni nel README (originale)
             const readmeContainer = document.getElementById('readme-content');
             if (readmeContainer) {
                 readmeContainer.addEventListener('click', (e) => {
@@ -622,7 +733,7 @@
                         const href = link.getAttribute('href');
 
                         if (href.startsWith('#')) {
-                            return;
+                            return; // Ancora interna, lascia fare al browser
                         }
 
                         if (href.startsWith('http://') || href.startsWith('https://')) {
@@ -631,10 +742,13 @@
                             return;
                         }
 
+                        // Gestione link interni (cartelle/file)
                         e.preventDefault();
                         showLoading();
 
                         const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname.slice(0, -1) : window.location.pathname;
+                        // Nota: Questo tentativo di risoluzione relativa è lato client. Idealmente, il backend
+                        // dovrebbe produrre URL assoluti per il browser o gestirli con attenzione.
                         const newUrl = new URL(href, window.location.origin + currentPath + '/');
 
                         window.location.href = newUrl.pathname;
@@ -643,6 +757,7 @@
             }
         });
 
+        // Nasconde l'overlay al caricamento completo
         window.addEventListener('load', () => {
             const overlay = document.getElementById('loadingOverlay');
             if (overlay) {
