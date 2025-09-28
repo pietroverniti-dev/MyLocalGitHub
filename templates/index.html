@@ -339,9 +339,15 @@
             color: var(--nord4);
         }
         
+        /* Stile specifico per visualizzazione codice (contenuto non formattato) */
         .file-viewer .content-body.code pre {
             margin: 0;
             overflow-x: auto;
+            /* Per il codice, forziamo il font mono */
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.4;
+            white-space: pre-wrap; /* Impedisce lo scroll orizzontale per testo semplice */
+            word-break: break-all;
         }
         
         /* Stili per il pulsante Copia Codice */
@@ -384,8 +390,12 @@
             color: var(--nord14); /* Verde per successo */
         }
 
-        /* Visualizzatore README */
-        .readme-container {
+        /* *********************************************************
+        STILI PER IL RENDERING MARKDOWN
+        *********************************************************
+        */
+
+        .markdown-content {
             border: 1px solid var(--nord3);
             border-radius: 12px;
             padding: 24px;
@@ -395,54 +405,69 @@
             margin-bottom: 24px;
             color: var(--nord4);
         }
-
-        .readme-container h1, .readme-container h2, .readme-container h3, .readme-container h4, .readme-container h5, .readme-container h6 {
+        
+        .markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4, .markdown-content h5, .markdown-content h6 {
             color: var(--nord6);
             text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+            scroll-margin-top: 20px; /* Per migliorare l'esperienza di salto */
         }
 
-        .readme-container h1 {
+        .markdown-content h1 {
             border-bottom: 1px solid var(--nord3);
             padding-bottom: 0.3em;
             margin-top: 0;
+            font-size: 2em; /* Aumento la dimensione per i titoli principali */
         }
 
-        .readme-container h2, .readme-container h3 {
+        .markdown-content h2, .markdown-content h3 {
             border-bottom: 1px solid var(--nord3);
             padding-bottom: 0.3em;
             margin-top: 24px;
+            font-size: 1.5em;
         }
 
-        .readme-container a {
+        .markdown-content a {
             color: var(--nord9);
             text-decoration: none;
+            transition: color 0.2s;
         }
 
-        .readme-container a:hover {
+        .markdown-content a:hover {
             text-decoration: underline;
+            color: var(--nord8);
         }
 
-        .readme-container pre {
+        .markdown-content pre {
             background-color: var(--nord0);
             border-radius: 8px;
             padding: 16px;
             overflow-x: auto;
             font-family: 'Courier New', Courier, monospace;
         }
-
-        .readme-container img {
-            max-width: 100%;
-            border-radius: 8px;
-        }
-
-        .readme-container code {
+        
+        .markdown-content code {
             background-color: var(--nord2);
             padding: 2px 4px;
             border-radius: 4px;
         }
+        
+        .markdown-content ul, .markdown-content ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 5px;
+        }
+
+
+        .markdown-content img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
 
         /* Stile per le tabelle */
-        .readme-container table {
+        .markdown-content table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
@@ -450,21 +475,23 @@
             border: 1px solid var(--nord3);
         }
 
-        .readme-container th, .readme-container td {
+        .markdown-content th, .markdown-content td {
             border: 1px solid var(--nord3);
             padding: 10px;
             text-align: left;
         }
 
-        .readme-container th {
+        .markdown-content th {
             background-color: var(--nord2);
             font-weight: 600;
         }
 
-        .readme-container tr:nth-child(even) {
+        .markdown-content tr:nth-child(even) {
             background-color: var(--nord1);
         }
-
+        
+        /* Fine Stili Markdown */
+        
         .error {
             color: var(--nord11);
             padding: 20px;
@@ -474,7 +501,7 @@
             margin-top: 20px;
         }
 
-        /* Stile per il code highlighting di Pygments */
+        /* Stile per il code highlighting di Pygments (omissis, invariato) */
         {{ pygments_style | safe }}
         .highlight table { width: auto; }
         .highlight pre { margin: 0; }
@@ -485,7 +512,7 @@
             color: var(--nord4);
         }
 
-        /* Stili per il caricamento */
+        /* Stili per il caricamento (omissis, invariato) */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -593,26 +620,43 @@
         </div>
 
     {% elif view_type == 'viewer' %}
+        <!-- Dobbiamo sapere l'estensione del file per applicare lo stile giusto -->
+        {% set file_extension = file_name.split('.')[-1].lower() %}
+        {% set is_markdown = file_extension == 'md' %}
+
         <div class="header">
             <h1>Visualizzazione File</h1>
             <a href="{{ url_for('view_repo', subpath=parent_path) }}" class="change-repo-btn" role="button" aria-label="Torna indietro">
                 ← Torna indietro
             </a>
         </div>
-        <div class="file-viewer">
-            <!-- Nuovo header con pulsante copia -->
-            <div class="content-header">
-                <span>{{ file_name }}</span>
-                <button id="copyCodeBtn" class="copy-btn" role="button" aria-label="Copia il codice">
-                    {{ copy_icon() }}
-                    <span id="copyFeedback" class="copy-feedback">Copia Codice</span>
-                </button>
+        
+        <!-- Contenitore Markdown per file .md, altrimenti contenitore codice -->
+        {% if is_markdown %}
+            <!-- Aggiungo data-attributi per il JS per risolvere i link relativi -->
+            {% set current_dir_path = parent_path if parent_path is not none else '' %}
+            <div class="markdown-content" id="markdownContent" 
+                 data-current-dir-path="{{ current_dir_path }}" 
+                 data-base-url="{{ url_for('view_repo', subpath='PLACEHOLDER') }}">
+                {{ content | safe }}
             </div>
-            <div class="content-body card code">
-                <!-- Aggiunto ID per facilitare la copia del contenuto -->
-                <pre id="codeContent">{{ content | safe }}</pre>
+        {% else %}
+            <!-- Per gli altri file (codice, testo semplice), usiamo la vista codice -->
+            <div class="file-viewer">
+                <!-- Nuovo header con pulsante copia -->
+                <div class="content-header">
+                    <span>{{ file_name }}</span>
+                    <button id="copyCodeBtn" class="copy-btn" role="button" aria-label="Copia il codice">
+                        {{ copy_icon() }}
+                        <span id="copyFeedback" class="copy-feedback">Copia Codice</span>
+                    </button>
+                </div>
+                <div class="content-body card code">
+                    <!-- Aggiunto ID per facilitare la copia del contenuto -->
+                    <pre id="codeContent">{{ content | safe }}</pre>
+                </div>
             </div>
-        </div>
+        {% endif %}
 
     {% elif view_type == 'browser' %}
         <div class="header">
@@ -653,7 +697,11 @@
         </div>
 
         {% if readme_html %}
-            <div class="readme-container card" id="readme-content">
+            <!-- Aggiungo data-attributi per il JS (per README in vista Browser) -->
+            {% set current_dir_path = subpath if subpath is not none else '' %}
+            <div class="markdown-content card" id="readme-content" 
+                 data-current-dir-path="{{ current_dir_path }}" 
+                 data-base-url="{{ url_for('view_repo', subpath='PLACEHOLDER') }}">
                 {{ readme_html | safe }}
             </div>
         {% endif %}
@@ -675,18 +723,15 @@
             const feedback = document.getElementById('copyFeedback');
 
             if (codePre && copyBtn && feedback) {
-                // Se il codice è all'interno di un highlight Pygments, usa il div highlight
                 const contentSource = codePre.querySelector('.highlight') || codePre;
                 
-                // Crea un elemento temporaneo per selezionare il testo
                 const tempElement = document.createElement('textarea');
-                tempElement.value = contentSource.textContent;
+                tempElement.value = contentSource.textContent; 
                 document.body.appendChild(tempElement);
                 tempElement.select();
 
                 let success = false;
                 try {
-                    // Usa document.execCommand('copy') per la compatibilità con l'ambiente iframe
                     success = document.execCommand('copy'); 
                 } catch (err) {
                     console.error('Impossibile copiare il testo:', err);
@@ -695,7 +740,6 @@
                 document.body.removeChild(tempElement);
 
                 if (success) {
-                    // Feedback visivo
                     copyBtn.classList.add('copied');
                     feedback.textContent = 'Copiato!';
                     
@@ -709,8 +753,38 @@
             }
         }
 
+        /**
+         * Risolve un percorso relativo (es. '../assets/img.png') in un percorso assoluto rispetto alla radice del repository.
+         * @param {string} currentDirPath Il percorso della directory corrente all'interno del repository (es. 'docs/guides'). Può essere vuoto per la radice.
+         * @param {string} relativePath Il percorso relativo da risolvere (es. '../img.png' o 'file.md').
+         * @returns {string} Il percorso risolto relativo alla radice del repository (es. 'docs/img.png').
+         */
+        function resolveRepoPath(currentDirPath, relativePath) {
+            // Rimuovi eventuali parametri di query o hash dal percorso relativo per la risoluzione
+            const cleanRelativePath = relativePath.split('?')[0].split('#')[0];
+
+            // Inizializza il percorso base con le parti della directory corrente
+            let pathParts = currentDirPath ? currentDirPath.split('/').filter(p => p.length > 0) : [];
+            const relativeParts = cleanRelativePath.split('/').filter(p => p.length > 0);
+
+            for (const part of relativeParts) {
+                if (part === '..') {
+                    // Risale di un livello se possibile
+                    if (pathParts.length > 0) {
+                        pathParts.pop();
+                    }
+                } else if (part !== '.') {
+                    // Aggiunge la parte (ignorando '.' e path vuoti)
+                    pathParts.push(part);
+                }
+            }
+
+            return pathParts.join('/');
+        }
+
+
         document.addEventListener('DOMContentLoaded', (event) => {
-            // 1. Inizializzazione della copia codice
+            // 1. Inizializzazione della copia codice (solo se il pulsante esiste)
             const copyBtn = document.getElementById('copyCodeBtn');
             if (copyBtn) {
                 copyBtn.addEventListener('click', copyCode);
@@ -722,39 +796,70 @@
                 form.addEventListener('submit', showLoading);
             }
 
-            // 3. Gestione link interni/esterni nel README (originale)
-            const readmeContainer = document.getElementById('readme-content');
-            if (readmeContainer) {
-                readmeContainer.addEventListener('click', (e) => {
+            // 3. Gestione link interni/esterni nel Markdown (README o file .md visualizzato)
+            const markdownContainers = document.querySelectorAll('.markdown-content');
+            
+            markdownContainers.forEach(container => {
+                // Preleva il percorso della directory corrente e l'URL base dal data attribute
+                // NOTA: il percorso corrente per i file nella vista 'viewer' è la directory che li contiene.
+                // Per i README nella vista 'browser', è il path della cartella stessa.
+                const currentDirPath = container.dataset.currentDirPath;
+                const baseUrlTemplate = container.dataset.baseUrl; // Esempio: /view_repo?subpath=PLACEHOLDER
+
+                if (!baseUrlTemplate) {
+                    console.error("Manca l'attributo data-base-url. Impossibile risolvere i link interni.");
+                    return;
+                }
+
+                container.addEventListener('click', (e) => {
                     const target = e.target;
                     const link = target.closest('a');
 
                     if (link) {
                         const href = link.getAttribute('href');
 
+                        if (!href || href.length === 0) return;
+
+                        // Caso 1: Link ad Ancoraggi Interni (#): Lascia l'azione predefinita del browser.
                         if (href.startsWith('#')) {
-                            return; // Ancora interna, lascia fare al browser
+                            // Non chiamare preventDefault, lasciando che il browser gestisca il salto
+                            return; 
                         }
 
+                        // Caso 2: Link Esterni (http/https): Apri in una nuova scheda.
                         if (href.startsWith('http://') || href.startsWith('https://')) {
                             e.preventDefault();
                             window.open(href, '_blank');
                             return;
                         }
 
-                        // Gestione link interni (cartelle/file)
+                        // Caso 3: Link Interno al Repository (file/cartella)
                         e.preventDefault();
                         showLoading();
 
-                        const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname.slice(0, -1) : window.location.pathname;
-                        // Nota: Questo tentativo di risoluzione relativa è lato client. Idealmente, il backend
-                        // dovrebbe produrre URL assoluti per il browser o gestirli con attenzione.
-                        const newUrl = new URL(href, window.location.origin + currentPath + '/');
+                        // 3a. Risolve il percorso relativo a partire dal percorso della directory corrente
+                        let fullRepoPath = resolveRepoPath(currentDirPath, href);
 
-                        window.location.href = newUrl.pathname;
+                        // 3b. Gestisce hash e query string originali se il link era a un file/ancora
+                        let hash = '';
+                        let queryString = '';
+
+                        if (href.includes('#')) {
+                            hash = '#' + href.split('#')[1];
+                        }
+                        if (href.includes('?')) {
+                            queryString = '?' + href.split('?')[1];
+                        }
+                        
+                        // 3c. Costruisce l'URL completo utilizzando il template e il percorso risolto
+                        // Usiamo encodeURIComponent per gestire spazi e caratteri speciali nei nomi di file/cartelle
+                        const newUrl = baseUrlTemplate.replace('PLACEHOLDER', encodeURIComponent(fullRepoPath)) + queryString + hash;
+                        
+                        // 3d. Reindirizzamento
+                        window.location.href = newUrl;
                     }
                 });
-            }
+            });
         });
 
         // Nasconde l'overlay al caricamento completo
